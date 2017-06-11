@@ -3,50 +3,66 @@
 
 // but you don't so you're going to write it from scratch:
 
-function dataProfiler(type) {
-  return (data) => typeof data === type;
-}
 
-const isFunc = dataProfiler('function');
-const isObj = dataProfiler('object');
-const isStr = dataProfiler('string');
-const isBool = dataProfiler('boolean');
-const isNum = dataProfiler('number');
-const isArr = (data) => Array.isArray(data);
+
+
 const isNull = (data) => data === null;
 const isUndef = (data) => data === undefined;
+const isFunc = (data) => typeof data === 'function';
+const isObj = (data) => typeof data === 'object';
+const isBool = (data) => typeof data === 'boolean';
+const isNum = (data) => typeof data === 'number';
+const isArr = (data) => Array.isArray(data);
+
+const isStr = (data) => typeof data === 'string';
+const nonStringables = [isUndef, isFunc];
+const stringables = [isBool, isNull, isNum];
+const byRefs = [isArr, isObj];
+
 
 
 const stringifyJSON = function(obj) {
   let JSONobj = '';
 
-  const dataTypes = []
-
-
-  if(isUndef(obj) || isFunc(obj)) {
-    JSONobj = undefined;
-  } else if (isStr(obj)) {
-    JSONobj += '"' + obj + '"'
-  } else if (isBool(obj) || isNull(obj) || isNum(obj)) {
-    JSONobj += String(obj);
-  } else if(isArr(obj)) {
-    JSONobj += '[';
-    
-    obj.forEach(function(item, i) {
-      JSONobj += stringifyJSON(item);
-      if (i !== obj.length - 1) {
+  function renderItems(iterator) {
+  iterator.forEach((item, i) => {
+    JSONobj += stringifyJSON(item);
+      if (i !== iterator.length - 1) {
         JSONobj += ',';
       }
     }); 
-    
+  }  
+
+  
+  
+  if(nonStringableDataTypes.some(function(objType) {
+    return 
+  })) {
+    JSONobj = undefined;
+  } else if (dataType === 2) {
+    JSONobj += '"' + obj + '"'
+  } else if (dataType < 6) {
+    JSONobj += String(obj);
+
+  } else if(isArr(obj)) {
+    JSONobj += '[';
+    renderItems(obj);
     JSONobj += ']';
 
-  } else if (typeof obj === 'object' && obj !== null) {
+  } else if (isObj(obj)) {
+    const properties = Object.keys(obj).map(function(key){
+      return  key + ':' + obj[key];
+    });
 
+    JSONobj += '{';
+    renderItems(properties);
+    JSONobj += '}';
   } 
   return JSONobj;
   // your code goes here
 };
+console.log(stringifyJSON(2))
+
 
 //THE TEST-SUITE
 
@@ -68,8 +84,8 @@ function compare(data) {
 // test('hello', 'strings');
 
 //undefined values support
-test(undefined, 'undefined')
-test(function(){}, 'functions');
+// test(undefined, 'undefined')
+// test(function(){}, 'functions');
 
 
 //array support
@@ -83,12 +99,14 @@ compare([null, undefined]);
 
 
 
-// //object support
-// test({ a: 'hello'}, 'objects with strings');
-// test({ b: 2, c: 1.2}, 'objects with numbers');
-// test({d: true, e: false}, 'objects with booleans');
-// test({f: undefined, g: null}), 'objects with undefined or null values'
-// test({ h: function(){} }, 'functions(should not render)');
+//object support
+test({ a: 'hello', adele: 'world'}, 'objects with strings');
+compare({ a: 'hello', adele: 'world'})
+test({ b: 2, c: 1.2}, 'objects with numbers');
+compare({ b: 2, c: 1.2})
+test({d: true, e: false}, 'objects with booleans');
+test({f: undefined, g: null}), 'objects with undefined or null values'
+test({ h: function(){} }, 'functions(should not render)');
 
 /*
   JSON.stringify should
