@@ -3,13 +3,33 @@
 
 // but you don't so you're going to write it from scratch:
 
-var stringifyJSON = function(obj) {
+function dataProfiler(type) {
+  return (data) => typeof data === type;
+}
+
+const isFunc = dataProfiler('function');
+const isObj = dataProfiler('object');
+const isStr = dataProfiler('string');
+const isBool = dataProfiler('boolean');
+const isNum = dataProfiler('number');
+const isArr = (data) => Array.isArray(data);
+const isNull = (data) => data === null;
+const isUndef = (data) => data === undefined;
+
+
+const stringifyJSON = function(obj) {
   let JSONobj = '';
 
   const dataTypes = []
-  if(obj === undefined || typeof obj === 'function') {
-    return null;
-  }else if(Array.isArray(obj)) {
+
+
+  if(isUndef(obj) || isFunc(obj)) {
+    JSONobj = undefined;
+  } else if (isStr(obj)) {
+    JSONobj += '"' + obj + '"'
+  } else if (isBool(obj) || isNull(obj) || isNum(obj)) {
+    JSONobj += String(obj);
+  } else if(isArr(obj)) {
     JSONobj += '[';
     
     obj.forEach(function(item, i) {
@@ -23,25 +43,46 @@ var stringifyJSON = function(obj) {
 
   } else if (typeof obj === 'object' && obj !== null) {
 
-  } else if (typeof obj === 'string') {
-    JSONobj += '"' + obj + '"'
-  } else if (typeof obj === 'boolean' || obj === null || typeof obj === 'number') {
-    JSONobj += String(obj);
-  }
+  } 
   return JSONobj;
   // your code goes here
 };
 
-console.log(stringifyJSON(null) === JSON.stringify(null), 'should work for null');
-console.log(stringifyJSON(true) === JSON.stringify(true), 'should work for true');
-console.log(stringifyJSON(false) === JSON.stringify(false), 'should work for false');
-console.log(stringifyJSON(1) === JSON.stringify(1), 'should work for numbers');
-console.log(stringifyJSON('hello') === JSON.stringify('hello'), 'should work for strings');
-console.log(stringifyJSON(undefined) === JSON.stringify(undefined), 'should not return for undefined');
-console.log(stringifyJSON(function(){}) === JSON.stringify(function(){}), 'should not return values that are functions');
-console.log(stringifyJSON([1, true]) === JSON.stringify([1, true]), 'should support arrays');
-console.log(stringifyJSON([null, undefined]) === JSON.stringify([null, undefined]), 'should support arrays with undefined');
+//THE TEST-SUITE
 
+function test(data, testValue) {
+  console.log(stringifyJSON(data) === JSON.stringify(data), 'should work for ' + testValue);
+}
+
+function compare(data) {
+  console.log('  this is the result of your function: ',stringifyJSON(data));
+  console.log('  this is the result of JSON.stringify() : ', JSON.stringify(data));
+}
+
+//primitive value support
+test(null, 'null');
+test(true, 'true');
+test(false, 'false');
+test(1, 'numbers');
+test(1.2, 'decimal numbers');
+test('hello', 'strings');
+
+//undefined values support
+test(undefined, 'undefined')
+test(function(){}, 'functions');
+
+
+//array support
+test([false, true], 'arrays with boolean values');
+test([1,2], 'arrays with numbers');
+test(['hello', 'world'], 'arrays with strings');
+test([null, undefined]), 'arrays with null and undefined values';
+compare([null, undefined]);
+
+
+
+
+//object support
 /*
   JSON.stringify should
     (1)receive any JSON accepted items (the function only works upon the collection
@@ -62,21 +103,3 @@ console.log(stringifyJSON([null, undefined]) === JSON.stringify([null, undefined
 
     (finally) turn the entirety of the object or array into a string.
 */
-
-// const example = {
-// 	hello: 'world!',
-// 	fun: true, //what happens now?
-// 	agreeable: undefined,
-// 	adder: function(a, b) {return a + b},
-// 	heart: 2,
-// 	love :['tacos', 'dogs', 3],
-// 	object: {adele: 'rocks'}
-// }
-
-// const example2 = ['hello', 2, false, undefined, {}, function(a, b) {return a + b}, ['hello', true]];
-
-
-// console.log(JSON.stringify(example));
-// console.log(JSON.stringify(example2));
-// console.log(JSON.stringify(true));
-// console.log(JSON.stringify(2));
