@@ -59,13 +59,13 @@ function compare(data) {
   console.log('  this is the result of JSON.stringify() : ', JSON.stringify(data));
 }
 
-//primitive value support
-test(null, 'null');
-test(true, 'true');
-test(false, 'false');
-test(1, 'numbers');
-test(1.2, 'decimal numbers');
-test('hello', 'strings');
+// //primitive value support
+// test(null, 'null');
+// test(true, 'true');
+// test(false, 'false');
+// test(1, 'numbers');
+// test(1.2, 'decimal numbers');
+// test('hello', 'strings');
 
 //undefined values support
 test(undefined, 'undefined')
@@ -73,16 +73,23 @@ test(function(){}, 'functions');
 
 
 //array support
-test([false, true], 'arrays with boolean values');
-test([1,2], 'arrays with numbers');
 test(['hello', 'world'], 'arrays with strings');
-test([null, undefined]), 'arrays with null and undefined values';
+test([1,2, 1.2, 0, -1, 0.0000056], 'arrays with numbers');
+test([false, true], 'arrays with boolean values');
+
+test([null, undefined], 'arrays with null and undefined values');
 compare([null, undefined]);
 
 
 
 
-//object support
+// //object support
+// test({ a: 'hello'}, 'objects with strings');
+// test({ b: 2, c: 1.2}, 'objects with numbers');
+// test({d: true, e: false}, 'objects with booleans');
+// test({f: undefined, g: null}), 'objects with undefined or null values'
+// test({ h: function(){} }, 'functions(should not render)');
+
 /*
   JSON.stringify should
     (1)receive any JSON accepted items (the function only works upon the collection
