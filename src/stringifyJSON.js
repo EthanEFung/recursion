@@ -1,7 +1,7 @@
 const type = {
 
   isStr : (data) => typeof data === 'string',
-  isNull : (data) => data === null,
+  isNull : (data) => data == null,
   isUndef : (data) => data === undefined,
   isFunc : (data) => typeof data === 'function',
   isObj : (data) => typeof data === 'object',
@@ -11,8 +11,52 @@ const type = {
 
 }
 
+let JSONobj = "";
 
-const stringifyJSON = function(obj) {
+const stringifyJSON = function(val) {
+
+  let JSONobj = '';
+
+  const dataIsNotStringable = [type.isUndef, type.isFunc].some((test) => test(val));
+  const dataIsStringable = [type.isBool, type.isNull, type.isNum].some((test) => test(val));
+
+  function renderItems(collection) {
+    collection.forEach((item, i) => {
+      if (item === undefined) {
+      	item = null;
+      }
+      JSONobj += stringifyJSON(item);
+
+      let itemIsntLast = (i !== collection.length -1);
+      if (itemIsntLast) {
+        JSONobj += ',';
+      }
+    }); 
+  }  
+
+
+  
+  if(type.isStr(val)) {
+    JSONobj += '"' + val + '"';
+  } else if(dataIsNotStringable) {
+    JSONobj = undefined;
+  } else if (dataIsStringable) {
+    JSONobj += val;
+  
+
+
+  } else if(type.isArr(val)) {
+    JSONobj += '[';
+      renderItems(val);
+    JSONobj += ']';
+  } else if (type.isObj(val)) {
+    const properties = Object.keys(val).map((key) => stringifyJSON(key) + ':' + stringifyJSON(val[key]));
+
+    JSONobj += '{' + properties.join(',') + '}';
+  } 
+  return JSONobj;
+  // your code goes here
+
 
 };
 
@@ -43,13 +87,13 @@ test(1.2, 'decimal numbers');
 // test(function(){}, 'functions');
 
 
-// //array support
-// test(['hello', 'world'], 'arrays with strings');
-// test([1,2, 1.2, 0, -1, 0.0000056], 'arrays with numbers');
-// test([false, true], 'arrays with boolean values');
+//array support
+test(['hello', 'world'], 'arrays with strings');
+test([1,2, 1.2, 0, -1, 0.0000056], 'arrays with numbers');
+test([false, true], 'arrays with boolean values');
 
-// test([null, undefined], 'arrays with null and undefined values');
-// compare([null, undefined]);
+test([null, undefined], 'arrays with null and undefined values');
+compare([null, undefined]);
 
 
 
@@ -64,53 +108,3 @@ test({f: undefined, g: null}), 'objects with undefined or null values'
 test({ h: function(){} }, 'functions(should not render)');
 
 
-/*
-  let JSONobj = '';
-
-  const dataIsNotStringable = [type.isUndef, type.isFunc].some((test) => test(obj));
-  const dataIsStringable = [type.isBool, type.isNull, type.isNum].some((test) => test(obj));
-
-  function renderItems(collection) {
-    collection.forEach((item, i) => {
-      JSONobj += stringifyJSON(item);
-
-      let itemIsntLast = (i !== collection.length -1);
-      if (itemIsntLast) {
-        JSONobj += ',';
-      }
-    }); 
-  }  
-
-
-  
-  if(type.isStr(obj)) {
-    JSONobj += '"' + obj + '"';
-  } else if(dataIsNotStringable) {
-    JSONobj = undefined;
-  } else if (dataIsStringable) {
-    JSONobj += obj;
-  
-
-
-  } else if(type.isArr(obj)) {
-    JSONobj += '[';
-      renderItems(obj);
-    JSONobj += ']';
-  } else if (type.isObj(obj)) {
-
-    const properties = Object.keys(obj).map(function (key) {  
-      if(type.isStr(obj[key])) {
-        obj[key] + obj[key];
-      }
-      return ['"' + key + '":"' +  obj[key] + '"']
-    });
-    
-    
-    JSONobj += '{';
-    JSONobj += properties.join(',');
-    JSONobj += '}';
-  } 
-  return JSONobj;
-  // your code goes here
-
-*/
