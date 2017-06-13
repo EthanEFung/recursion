@@ -1,6 +1,3 @@
-
-
-
 const type = {
 
   isStr : (data) => typeof data === 'string',
@@ -11,10 +8,6 @@ const type = {
   isBool : (data) => typeof data === 'boolean',
   isNum : (data) => typeof data === 'number',
   isArr : (data) => Array.isArray(data)
-
-}
-
-function renderArr(array) {
 
 }
 
