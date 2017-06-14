@@ -1,83 +1,71 @@
-// If life was easy, we could just do things the easy way:
-// var getElementsByClassName = function (className) {
-//   return document.getElementsByClassName(className);
-// };
-
-// But instead we're going to implement it from scratch:
-
 // You should use document.body, element.childNodes, and element.classList
-function nodeHasClass(node, className) {
-  let classes = node.classList;
+function currentNodeHasClass(node, className) {
+
   let hasClass = false;
 
-  if(classes !== undefined) { 
-    let values = classes.values()
-    for(let val of values) {
+  if(node.classList !== undefined) { 
+    let classValues = node.classList.values();
+    for(let val of classValues) {
       if (val === className) {
         hasClass = true;
       }
     }
   } 
+
   return hasClass;
+
 }
 
-function checkCurrNodeForClass(node, className, collection) {
+
+function renderCollection(node, className, collection) {
   
-  let classes = node.classList;
-  
-  if(nodeHasClass(node, className)) {
+  if(currentNodeHasClass(node, className)) {
     collection.push(node);
   } 
 
-  if(node.hasChildNodes()) {
-    //recursive case
-    
-    for(let child of node.childNodes.values()) {
-      checkCurrNodeForClass(child, className, collection);
+  if(node.hasChildNodes()) { // Recursive Case
+    for(let childNode of node.childNodes.values()) {
+      renderCollection(childNode, className, collection);
     }
-
-  } else {
-    //base case
+  } else {  // Base Case
     return collection;
   } 
-  //check the class of the current node, and push the nodes that have the classList
-  //if the node has children, run the function for the children
-  //if the node has no more children, return the collection.
+
 }
 
 
 function getElementsByClassName(className) {
-
   let elements = [];   
-  elements.concat(checkCurrNodeForClass(document.body, className, elements));
+  elements.concat(renderCollection(document.body, className, elements));
   return elements;
 };
 
 
 
-//TEST SUITE
+// //TEST SUITE
 
-function test(className, testName) {
+// function test(className, testName) {
 
-  let doc = (className) => document.getElementsByClassName(className);
-  let func = (className) => getElementsByClassName(className);
+//   let actualFunc = (className) => document.getElementsByClassName(className);
+//   let myFunc = (className) => getElementsByClassName(className);
   
-  let test = func(className).every((val, i) => val === doc(className).item(i));
+//   let test = myFunc(className).every((val, i) => val === actualFunc(className).item(i));
   
-  console.log(test, testName);
+//   console.log(test, testName);
 
-  if (test === false) {
-  console.log('  result of actual func: ', document.getElementsByClassName(className));
-  console.log('  result of written func: ', getElementsByClassName(className));
-  }
-}
+//   if (test === false) {
+//   console.log('  result of actual func: ', document.getElementsByClassName(className));
+//   console.log('  result of written func: ', getElementsByClassName(className));
+//   };
+// }
 
-$(document).ready( function(){
-  test("targetClassName", 'className "targetClassName"');
-  test('progress', 'className is "progress"');
-  test('suite', 'className is "suite"');
-  test('test fail', 'className is "test" and "fail"');
-});
+// //render the tests after the DOM has loaded
+// $(document).ready( function(){
+//   test("targetClassName", 'className "targetClassName"');
+//   test('progress', 'className is "progress"');
+//   test('suite', 'className is "suite"');
+//   test('test fail', 'className is "test" and "fail"');
+// });
 
 
 
