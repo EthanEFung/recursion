@@ -6,20 +6,50 @@
 // But instead we're going to implement it from scratch:
 
 // You should use document.body, element.childNodes, and element.classList
-var getElementsByClassName = function(className) {
-  return document.body;
+
+const HTMLCol = {
+
+}
+
+
+const tag = (tag) => document.getElementsByTagName(tag);  
+const doc = (className) => document.getElementsByClassName(className);
+const func = (className) => getElementsByClassName(className);
+
+let getElementsByClassName = function(className) {
+  let elements = [];
+  Object.setPrototypeOf(elements, HTMLCollection.prototype);
+  
+  
+  
+
+  
+  
+
+  
+
+  return elements;
+  //should return a collection of DOM elements that have the className.
+  //each item should show what sort of node it is nested in (<div>, <body>, etc. and the className)
+    //e.g div.className or body.className
 };
+
+
+/*
+  What is the base case: There are no more nodes to look into
+  What is the recursive case: There are other nodes that must be looked into
+*/
 
 
 //TEST SUITE
 
 function test(className, testName) {
-  let test = document.getElementsByClassName(className) === getElementsByClassName(className);
-
+  let test = doc(className) === func(className);
   console.log(test, testName);
+
   if (test === false) {
-  	console.log('  result of actual func: ', document.getElementsByClassName(className));
-  	console.log('  result of written func: ', getElementsByClassName(className));
+    console.log('  result of actual func: ', doc(className));
+    console.log('  result of written func: ', func(className));
   }
 }
 
